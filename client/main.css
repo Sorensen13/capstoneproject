@@ -1,0 +1,15 @@
+/* CSS declarations go here */
+
+.middle{
+	text-align: center;
+}
+
+.messagescontent{
+	overflow: auto;
+	height: 300px;
+}
+
+.darktheme{
+	nav{color: #1a237e;}
+	body{color: #212121;}
+}

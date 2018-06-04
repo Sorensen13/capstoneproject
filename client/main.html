@@ -1,0 +1,137 @@
+<head>
+  <title>Chatroomers</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+
+<body>
+</body>
+
+<template name="ApplicationLayout">
+  {{> navbar}}
+
+  {{> yield}}
+</template>
+
+<template name="header">
+  <h3 class="middle">Welcome to Chatroomers {{nickname}}</h3>
+  {{#if currentUser}}
+  <p class="middle">To get started, choose an available chatroom or <a class="modal-trigger" href="#addModal">create your own.</a> You can also <a href="">search for one..</a></p>
+  {{> add}}
+  <script>
+    $(document).ready(function(){
+        $('.modal').modal();
+      });
+  </script>
+  {{> availableChatrooms}}
+  {{/if}}
+  {{#unless currentUser}}
+  <p class="middle">To get started, please login or create an account.</p>
+  {{/unless}}
+</template>
+
+<template name="navbar">
+  <nav class="blue">
+    <div class="nav-wrapper">
+      <a class="brand-logo" href="/"><i class="material-icons">forum</i>Chatroomers</a>
+      <ul id="nav-mobile" class="right hide-on-med-and-down">
+        <li>{{>themes}}</li>
+        <li>{{>loginButtons align="right"}}</li>
+      </ul>
+    </div>
+</nav>
+</template>
+
+<template name="add">
+  <div id="addModal" class="modal">
+    <div class="modal-content">
+      <h3>Create chatroom</h3>
+      <form class="add-form">
+        <div class="row">
+          <div class="input-field col s12">
+            <input type="text" id="chatroom-name">
+            <label for="text">Name of chatroom</label>
+          </div>
+          <div class="input-field col s12">
+            <input type="text" id="description">
+            <label for="text">Add a description</label>            
+          </div>
+        </div>
+        <form action="#">
+          <p>
+            <input type="checkbox" id="checkboxid" class="filled-in">
+            <label for="checkboxid">Private (WIP)</label>
+          </p>
+        </form>
+        <button class="btn waves-effect waves-light js-create-room" type="submit" name="action">Create room
+        <i class="material-icons right">send</i>
+        </button>
+        </form>
+    </div>
+  </div>
+</template>
+
+<template name="availableChatrooms">
+  <div class="container">
+    <div class="row">
+        {{#each chatrooms}}
+          <div class="col s12 m6 l4">
+            <div class="card blue-grey darken-1">
+              <div class="card-content white-text">
+            {{> chatroomItems}}
+              </div>
+            {{> joinButton}}
+            </div>
+          </div>
+        {{/each}}
+    </div>
+  </div>
+</template>
+
+<template name="chatroomItems">
+    <span class="card-title">{{title}}</span>
+    <p>Owner: {{chatroomOwner}}</p>
+    <p>{{description}}</p>
+</template>
+
+<template name="joinButton">
+  <div class="card-action">
+  <a href="/chatroom/{{_id}}">Join <i class="tiny material-icons">arrow_forward</i></a>
+  </div>
+</template>
+
+<template name="chatroomInterface">
+	<div class="container">
+		<h3>You have joined: {{title}}</h3>
+		<p>{{description}}</p>
+		<hr>
+      <div class="messagescontent">
+		    {{#each message}}
+          {{>messageItem}}
+        {{/each}}
+      </div>
+		{{> sendMessage}}
+	</div>
+</template>
+
+<template name="messageItem">
+  <p><b>{{messageOwner}}</b>: {{messageText}}</p>
+</template>
+
+<template name="sendMessage">
+	{{#autoForm collection="Messages"
+              id="sendMessageForm"
+              type="method"
+              meteormethod="createMessage"}}
+  <fieldset>
+    {{> afQuickField name="messageText"}}
+    {{> afQuickField name='chatroomId' value=chatroomId type="hidden"}}
+    {{> afQuickField name='messageOwner' value=0 type="hidden"}}
+    {{> afQuickField name='createdOn' type="hidden"}}
+  </fieldset>
+  <button type="submit" class="btn-floating btn-large waves-effect waves-light blue"><i class="material-icons">send</i></button>
+  {{/autoForm}}
+</template>
+
+<template name="themes">
+  <a href="#">Change theme (WIP)</a>
+</template>
